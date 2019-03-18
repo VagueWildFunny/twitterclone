@@ -11,6 +11,7 @@ use File;
 use App\User;
 use DB;
 use Storage;
+use App\Post;
 class UserController extends Controller
 {
     //
@@ -26,7 +27,9 @@ class UserController extends Controller
     public function profile()
     {
         return view('profile', array('user' => Auth::user()));
+
     }
+
 
     public function update_avatar(Request $request) 
     {
@@ -53,36 +56,23 @@ class UserController extends Controller
 
             
             }
-            return Redirect::back();
+            return Redirect::back()->with('success','Profile Picture Updated!');
     }  
 
     public function show($slug)
-    {
+    {   
+       
         $user = User::where('slug', $slug)
         ->firstOrFail();
+
+
     
         return view('show')
             ->with('user', $user);
     }
 
 
-    public function edit($id) 
-    {   
-        
-        $user = User::findOrFail($id);
-
-        if($user = Auth::user()){
-            return view('edit')
-                ->with('user', $user);
-                
-                
-        }
-        
-        return Redirect::to('index');
     
-       
-      
-    }
 
 
     public function update(Request $request, $id)
@@ -93,12 +83,12 @@ class UserController extends Controller
             // logica
             $user = User::findOrFail($id);
             $user->name = $request->name;
-            $user->slug = $request->slug;
+            $user->bio  = $request->bio;
             $user->save();
 
             DB::commit();
 
-            return Redirect::to('profile');
+            return Redirect::back()->with('success','Profile Updated!');
         }
         catch(Exception $e) {
             // later
@@ -108,13 +98,19 @@ class UserController extends Controller
 
     }
 
+
+
     public function destroy($id)
     {
         //
+        
+    
         $user = User::findOrFail($id);
         $image_path = 'uploads/avatar/'.$user->avatar;
 
         File::delete($image_path);
+        $user->posts()->delete();
+        
         
         $user->delete();
         

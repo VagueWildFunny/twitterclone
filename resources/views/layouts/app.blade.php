@@ -18,6 +18,22 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    {{-- script --}}
+    <script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=l0hwhlo0x1rlaw5krbmgxgkwum7wa6tom7725mh5beoqvep2 "></script>
+
+    <script>
+        tinymce.init({
+            selector: '#mytextarea',
+
+        });
+
+        tinymce.init({
+            selector: '#postarea',
+
+        });
+    </script>
+
 </head>
 <body>
     <div id="app">
@@ -40,9 +56,12 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
+                            @yield('home')
+
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
+
                             @if (Route::has('register'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
@@ -59,9 +78,13 @@
                                         
                                                 Home
                                     </a>
+                                    <a class="dropdown-item" href="profile/{{$user->slug}}/">
+                                        
+                                            Profile page
+                                    </a>
                                     <a class="dropdown-item" href="{{URL::to('profile')}}">
                                         
-                                                Profile
+                                                Edit Profile
                                     </a>
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
@@ -80,8 +103,10 @@
                 </div>
             </div>
         </nav>
-
+       
         <div class="container">
+            <br>
+            @include('partials.flash')
             @yield('content')
         </div>
     </div>

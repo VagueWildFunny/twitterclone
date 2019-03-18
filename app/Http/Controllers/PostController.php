@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
+use App\Post;
+use DB;
+use Auth;
 
-class TweetController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,6 +39,25 @@ class TweetController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            DB::beginTransaction();
+
+            // logica
+            $post = new Post;
+            $post->user_id = Auth()->user()->id;
+            $post->body = $request->body;
+            $post->save();
+
+            DB::commit();
+            return redirect('profile')->with('success','Post Added!');
+        
+           
+        }
+        catch(Exception $e) {
+            // later
+            DB::rollback();
+            
+        }
     }
 
     /**
@@ -46,6 +69,7 @@ class TweetController extends Controller
     public function show($id)
     {
         //
+
     }
 
     /**
@@ -78,7 +102,7 @@ class TweetController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        //
+    {   
+
     }
 }

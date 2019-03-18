@@ -15,7 +15,9 @@ Route::get('/', 'UserController@index');
 
 Auth::routes();
 Route::resource('profile', 'UserController');
+Route::resource('post', 'PostController');
 Route::get('/index', 'UserController@index')->name('index');
+
 Route::get('/profile', 'UserController@profile')->middleware('auth');
 Route::post('/profile', 'UserController@update_avatar');
 Route::get('/home', 'HomeController@index')->name('home');
